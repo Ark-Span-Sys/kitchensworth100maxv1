@@ -34,6 +34,14 @@ export const metadata: Metadata = {
     description: brand.tagline,
     type: "website",
     locale: "en_NG",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Kitchen's Worth — Double Grilled Chicken Burger",
+      },
+    ],
   },
 };
 
