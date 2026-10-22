@@ -36,6 +36,7 @@ export const NAV_LINKS = [
   { href: "/catering", label: "Catering" },
   { href: "/zones", label: "Delivery" },
   { href: "/track", label: "Track Order" },
+  { href: "/refer", label: "Refer & Earn" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ] as const;
