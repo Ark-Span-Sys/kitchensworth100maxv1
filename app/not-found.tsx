@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default function NotFound() {
   return (
     <div className="mx-auto flex max-w-xl flex-col items-center gap-4 px-4 py-20 text-center">

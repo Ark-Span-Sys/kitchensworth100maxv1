@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin/guard";
-import { toggleProvider, saveBank } from "./actions";
+import { toggleProvider, saveBank } from "@/app/admin/payments/actions";
 
 export const dynamic = "force-dynamic";
 

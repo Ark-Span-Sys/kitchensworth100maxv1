@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin/guard";
 import { MenuItemForm } from "@/components/admin/MenuItemForm";
-import { updateMenuItem } from "./actions";
+import { updateMenuItem } from "@/app/admin/menu/actions";
 
 export const dynamic = "force-dynamic";
 

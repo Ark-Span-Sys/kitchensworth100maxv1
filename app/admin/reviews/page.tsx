@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin/guard";
 import { Badge } from "@/components/ui/Badge";
-import { setReviewApproved } from "./actions";
+import { setReviewApproved } from "@/app/admin/reviews/actions";
 
 export const dynamic = "force-dynamic";
 

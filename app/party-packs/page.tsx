@@ -52,7 +52,7 @@ export default async function PartyPacksPage() {
               <p className="muted text-sm">Serves {p.serves_min} to {p.serves_max} guests</p>
               {p.contents && p.contents.length > 0 && (
                 <ul className="mt-2 space-y-1 text-sm">
-                  {p.contents.map((c) => (
+                  {p.contents.map((c: string) => (
                     <li key={c} className="flex items-start gap-2">
                       <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-green" />
                       <span>{c}</span>

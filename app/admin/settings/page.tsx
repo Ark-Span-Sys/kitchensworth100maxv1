@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin/guard";
-import { saveSettings } from "./actions";
+import { saveSettings } from "@/app/admin/settings/actions";
 
 export const dynamic = "force-dynamic";
 

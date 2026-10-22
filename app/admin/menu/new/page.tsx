@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin/guard";
 import { MenuItemForm } from "@/components/admin/MenuItemForm";
-import { createMenuItem } from "./actions";
+import { createMenuItem } from "@/app/admin/menu/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +15,7 @@ export default async function NewMenuItemPage() {
     .eq("is_active", true)
     .order("sort_order");
 
-  const opts = (categories ?? []).map((c) => ({ value: c.id, label: c.name }));
+  const opts = (categories ?? []).map((c) => ({ id: c.id, name: c.name }));
 
   return (
     <div className="space-y-4">

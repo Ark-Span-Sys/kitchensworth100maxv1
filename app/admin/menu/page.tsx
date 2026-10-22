@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin/guard";
 import { formatNgn } from "@/lib/pricing";
 import { Badge } from "@/components/ui/Badge";
-import { deleteMenuItem } from "./actions";
+import { deleteMenuItem } from "@/app/admin/menu/actions";
 
 export const dynamic = "force-dynamic";
 

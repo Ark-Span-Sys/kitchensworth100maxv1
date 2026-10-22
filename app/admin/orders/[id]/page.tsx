@@ -5,7 +5,7 @@ import { requireAdmin } from "@/lib/admin/guard";
 import { formatNgn } from "@/lib/pricing";
 import { Badge } from "@/components/ui/Badge";
 import { buildOrderMessage, buildWaLink } from "@/lib/whatsapp";
-import { setOrderStatus } from "./actions";
+import { setOrderStatus } from "@/app/admin/orders/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +28,7 @@ export default async function AdminOrderDetail({ params }: { params: Promise<{ i
   const { id } = await params;
   const supabase = await createClient();
 
-  const [{ data: order }, { data: items }, { data: events }, { data: settings }, { data: zone }] = await Promise.all([
+  const [orderRes, itemsRes, eventsRes, settingsRes, zone] = await Promise.all([
     supabase.from("orders").select("*").eq("id", id).single(),
     supabase.from("order_items").select("*").eq("order_id", id),
     supabase
@@ -39,6 +39,11 @@ export default async function AdminOrderDetail({ params }: { params: Promise<{ i
     supabase.from("site_settings").select("whatsapp_number").eq("id", 1).single(),
     orderZoneLookup(supabase, id),
   ]);
+
+  const order = orderRes.data;
+  const items = itemsRes.data;
+  const events = eventsRes.data;
+  const settings = settingsRes.data;
 
   if (!order) notFound();
 
@@ -151,9 +156,11 @@ export default async function AdminOrderDetail({ params }: { params: Promise<{ i
         <div className="grid gap-2 sm:grid-cols-3 md:grid-cols-5">
           {STATUSES.map((s) => {
             const disabled = s === order.status;
-            const bound = setOrderStatus.bind(null, order.id, s);
+            const action = async (fd: FormData) => {
+              await setOrderStatus(order.id, s, fd.get("note") as string | undefined);
+            };
             return (
-              <form key={s} action={bound}>
+              <form key={s} action={action}>
                 <button
                   type="submit"
                   disabled={disabled}
