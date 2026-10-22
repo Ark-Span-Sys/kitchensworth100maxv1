@@ -9,14 +9,15 @@ import { formatNgn } from "@/lib/pricing";
 /**
  * Floating Cart Badge — appears when user adds items to cart.
  * Draggable, with close button. Position persists in localStorage.
- * Sits above the floating dock at bottom-32.
+ * Default position: right-4 bottom-32 (above the floating dock).
  */
 export function FloatingCartBadge() {
   const { count, subtotal, openCart } = useCart();
   const [visible, setVisible] = useState(false);
-  const [position, setPosition] = useState<{ x: number; y: number }>({ x: 16, y: 16 }); // default right-4 bottom-32 (16px from right, 128px from bottom)
+  // Default: right-4 (16px) bottom-32 (128px)
+  const [position, setPosition] = useState<{ x: number; y: number }>({ x: 16, y: 128 });
   const [isDragging, setIsDragging] = useState(false);
-  const dragRef = useRef<{ startX: number; startY: number; startLeft: number; startTop: number } | null>(null);
+  const dragRef = useRef<{ startX: number; startY: number; startRight: number; startBottom: number } | null>(null);
   const elementRef = useRef<HTMLDivElement>(null);
 
   // Load saved position on mount
@@ -48,27 +49,27 @@ export function FloatingCartBadge() {
     }
   }, [count]);
 
-  // Handle drag start
+  // Handle drag start (mouse)
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (!elementRef.current) return;
     const rect = elementRef.current.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
     dragRef.current = {
       startX: e.clientX,
       startY: e.clientY,
-      startLeft: rect.left,
-      startTop: rect.top,
+      startRight: viewportWidth - rect.right,
+      startBottom: viewportHeight - rect.bottom,
     };
     setIsDragging(true);
     e.preventDefault();
   }, []);
 
-  // Handle drag move
+  // Handle drag move (mouse)
   useEffect(() => {
     if (!isDragging || !dragRef.current) return;
 
     const handleMove = (e: MouseEvent) => {
-      const dx = e.clientX - dragRef.current!.startX;
-      const dy = e.clientY - dragRef.current!.startY;
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       const el = elementRef.current;
@@ -77,11 +78,14 @@ export function FloatingCartBadge() {
       const elWidth = elRect.width;
       const elHeight = elRect.height;
 
-      // Calculate new position (from right/bottom)
-      const newX = Math.max(16, Math.min(viewportWidth - elWidth - 16, viewportWidth - dragRef.current!.startLeft - dx - elWidth));
-      const newY = Math.max(16, Math.min(viewportHeight - elHeight - 32, viewportHeight - dragRef.current!.startTop - dy - elHeight));
+      const dx = e.clientX - dragRef.current!.startX;
+      const dy = e.clientY - dragRef.current!.startY;
 
-      setPosition({ x: Math.round(newX), y: Math.round(newY) });
+      // New position from right/bottom
+      const newRight = Math.max(16, Math.min(viewportWidth - elWidth - 16, dragRef.current!.startRight - dx));
+      const newBottom = Math.max(16, Math.min(viewportHeight - elHeight - 32, dragRef.current!.startBottom - dy));
+
+      setPosition({ x: Math.round(newRight), y: Math.round(newBottom) });
     };
 
     const handleUp = () => {
@@ -104,12 +108,14 @@ export function FloatingCartBadge() {
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (!elementRef.current) return;
     const rect = elementRef.current.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
     const touch = e.touches[0];
     dragRef.current = {
       startX: touch.clientX,
       startY: touch.clientY,
-      startLeft: rect.left,
-      startTop: rect.top,
+      startRight: viewportWidth - rect.right,
+      startBottom: viewportHeight - rect.bottom,
     };
     setIsDragging(true);
   }, []);
@@ -119,8 +125,6 @@ export function FloatingCartBadge() {
 
     const handleMove = (e: TouchEvent) => {
       const touch = e.touches[0];
-      const dx = touch.clientX - dragRef.current!.startX;
-      const dy = touch.clientY - dragRef.current!.startY;
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       const el = elementRef.current;
@@ -129,10 +133,13 @@ export function FloatingCartBadge() {
       const elWidth = elRect.width;
       const elHeight = elRect.height;
 
-      const newX = Math.max(16, Math.min(viewportWidth - elWidth - 16, viewportWidth - dragRef.current!.startLeft - dx - elWidth));
-      const newY = Math.max(16, Math.min(viewportHeight - elHeight - 32, viewportHeight - dragRef.current!.startTop - dy - elHeight));
+      const dx = touch.clientX - dragRef.current!.startX;
+      const dy = touch.clientY - dragRef.current!.startY;
 
-      setPosition({ x: Math.round(newX), y: Math.round(newY) });
+      const newRight = Math.max(16, Math.min(viewportWidth - elWidth - 16, dragRef.current!.startRight - dx));
+      const newBottom = Math.max(16, Math.min(viewportHeight - elHeight - 32, dragRef.current!.startBottom - dy));
+
+      setPosition({ x: Math.round(newRight), y: Math.round(newBottom) });
     };
 
     const handleUp = () => {
@@ -156,7 +163,9 @@ export function FloatingCartBadge() {
   return (
     <div
       ref={elementRef}
-      className="fixed z-[60] transition-opacity duration-200"
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
+      className="fixed z-[60] transition-opacity duration-200 select-none"
       style={{
         right: position.x,
         bottom: position.y,
