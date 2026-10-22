@@ -11,7 +11,8 @@ import type { CartLine, SiteSettings } from "./types";
  *  - converts a leading `0` (local NG format) to `234`
  *  - leaves anything already in international form untouched
  */
-export function normaliseNumber(raw: string): string {
+export function normaliseNumber(raw: string | null | undefined): string {
+  if (!raw) return "2347030606021"; // fallback
   let s = raw.replace(/[^\d]/g, "");
   if (s.startsWith("00")) s = s.slice(2);
   if (s.startsWith("0")) s = "234" + s.slice(1);
