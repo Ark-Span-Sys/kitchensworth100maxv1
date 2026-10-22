@@ -101,7 +101,7 @@ function formToObject(fd: FormData): Record<string, unknown> {
  * The form uses checkboxes with a preceding hidden input of "off". Convert
  * "off" to false and "on" to true.
  */
-export function formToObjectWithChecks(fd: FormData) {
+export async function formToObjectWithChecks(fd: FormData) {
   const obj = formToObject(fd);
   for (const [k, v] of Object.entries(obj)) {
     if (v === "off") obj[k] = false;
