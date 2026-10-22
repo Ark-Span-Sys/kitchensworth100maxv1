@@ -1,0 +1,33 @@
+# Local Supabase configuration for Kitchen's Worth dev.
+# Studio is on 3123 so `next dev` can keep port 3000.
+
+project_id = "kitchensworth"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[studio]
+enabled = true
+port = 3123
+
+[storage]
+enabled = true
+file_size_limit = "5MiB"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/admin", "http://localhost:3000/auth/callback"]
+enable_confirmations = false
+
+[analytics]
+enabled = false

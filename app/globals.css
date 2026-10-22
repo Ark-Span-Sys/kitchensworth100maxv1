@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ */
+/* Kitchen's Worth — brand base styles                                  */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --brand-black: #0b0b0b;
+  --brand-green: #5cd15c;
+  --brand-green-dark: #3fa23f;
+  --brand-yellow: #f5d74a;
+  --brand-cream: #fafaf7;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html,
+body {
+  background: var(--brand-cream);
+  color: var(--brand-black);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dock reserve is now handled inside the footer component itself. */
+
+body.admin-mode {
+  /* No dock, so no reserve space needed. */
+  padding-bottom: 0;
+  background: #f5f5f2;
+}
+
+/* Focus ring in brand green. */
+*:focus-visible {
+  outline: 2px solid var(--brand-green);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Utility classes used across the site. */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand-black px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-green hover:text-brand-black disabled:opacity-50;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-brand-black/20 bg-white px-6 py-3 text-sm font-semibold text-brand-black transition hover:border-brand-black;
+  }
+  .btn-green {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand-green px-6 py-3 text-sm font-semibold text-brand-black transition hover:bg-brand-green-dark hover:text-white disabled:opacity-50;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full bg-brand-black/5 px-3 py-1 text-xs font-medium text-brand-black/70;
+  }
+  .card {
+    @apply rounded-2xl border border-brand-black/8 bg-white shadow-sm;
+  }
+  .heading-xl {
+    @apply font-display text-3xl font-black tracking-tight sm:text-4xl md:text-5xl;
+  }
+  .heading-lg {
+    @apply font-display text-2xl font-black tracking-tight sm:text-3xl;
+  }
+  .heading-md {
+    @apply font-display text-xl font-bold tracking-tight;
+  }
+  .muted {
+    @apply text-brand-black/60;
+  }
+  .pb-safe {
+    padding-bottom: var(--safe-bottom);
+  }
+}
+
+/* Category marquee: a slow, seamless horizontal loop. The track holds the list
+   duplicated exactly twice, so translating -50% lands the copy back on the
+   start for a gapless loop. It pauses on hover/focus/press so chips stay
+   clickable and keyboard-reachable. */
+@keyframes kw-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.kw-marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+.kw-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: kw-marquee 50s linear infinite;
+}
+.kw-marquee:hover .kw-marquee-track,
+.kw-marquee:focus-within .kw-marquee-track,
+.kw-marquee:active .kw-marquee-track {
+  animation-play-state: paused;
+}
+
+/* Scroll reveal: the outer node fades, the inner node rises. Splitting the
+   two keeps transform/opacity on separate elements (smoother compositing and
+   no interaction with card shadows). */
+.kw-reveal {
+  opacity: 0;
+  transition: opacity 0.7s ease-out;
+}
+.kw-reveal-in {
+  opacity: 1;
+}
+.kw-reveal-inner {
+  transform: translate3d(0, 26px, 0);
+  transition: transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+.kw-reveal-in .kw-reveal-inner {
+  transform: none;
+}
+
+/* Respect reduced-motion at the CSS layer too. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .kw-marquee {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .kw-marquee-track {
+    animation: none !important;
+    transform: none !important;
+    width: auto;
+  }
+  .kw-reveal {
+    opacity: 1;
+  }
+  .kw-reveal-inner {
+    transform: none;
+  }
+}

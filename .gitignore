@@ -1,0 +1,17 @@
+node_modules
+.next
+out
+build
+dist
+.env
+.env.local
+.env*.local
+.DS_Store
+.vercel
+coverage
+playwright-report
+test-results
+supabase/.branches
+supabase/data
+supabase/.temp
+types/database.ts.bak
